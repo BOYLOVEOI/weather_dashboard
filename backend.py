@@ -2,12 +2,11 @@
 import requests
 
 API_KEY = "8de3beaa830a23253f5181daf1bada14"
-API_KEY2 = "141710af2113bab9f55ef73e1bcd33d5"
 
 # Creating function to get data
 def get_data(city, country, days):
     # Construct query URL to send to OpenWeather API
-    url = f"http://api.openweathermap.org/data/2.5/forecast?q={city},{country}&appid={API_KEY2}"
+    url = f"http://api.openweathermap.org/data/2.5/forecast?q={city},{country}&appid={API_KEY}"
     # Send our request to the OpenWeather API and store response into response variable
     response = requests.get(url)
     # Format response variable into a JSON
