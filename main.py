@@ -18,11 +18,30 @@ option = st.selectbox(label="Select data to view", options=("Temperature",
 # Creating subheader for graph
 st.subheader(f"{option} for the next {days} days in {city}, {country}")
 
-data = get_data(city, country, days, option)
+# If user enters in a place, retrieve data
+if city and country:
+    # Call the get_data method to retrieve filtered list from OpenWeatherAPI
+    data = get_data(city, country, days)
 
-# Creating plotly figure to pass into st.plotly_chart() method to create a graph
-# px.line() creates a line chart
-figure = px.line(x=d, y=t, labels={"x": "Date", "y": "Temperature in F"})
+    # If user selects temperature option
+    if option == 'Temperature':
+        # Filter only the temperature information from the API call
+        temperatures = [i["main"]["temp"] for i in data]
+        # Filter only dates from API call
+        dates = [i["dt_txt"] for i in data]
+        # Creating plotly figure to pass into st.plotly_chart() method to create a graph
+        # px.line() creates a line chart
+        figure = px.line(x=dates, y=temperatures, labels={"x": "Date", "y": "Temperature in F"})
+        # Passing the figure object into st.plotly_chart()
+        st.plotly_chart(figure)
 
-# Passing the figure object into st.plotly_chart()
-st.plotly_chart(figure)
+    # If user selects sky option
+    elif option == 'Sky':
+        # Filter only the sky conditions from the API call
+        condition = [i["weather"][0]["main"] for i in data]
+        # Map conditions to paths of images
+        images = {'Clear': 'images/clear.png', 'Clouds': 'images/cloud.png', 'Rain': 'images/rain.png', 'Snow': 'images/snow.png'}
+        # Filter dates 
+        dates = [i["dt_txt"] for i in data]
+        # Render images 
+        st.image([images[i] for i in condition], caption=dates, width=100)
